@@ -66,8 +66,8 @@ end
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
-Main.Size = UDim2.new(0, 420, 0, 480)
-Main.Position = UDim2.new(0.5, -210, 0.5, -240)
+Main.Size = UDim2.new(0, 420, 0, 500)
+Main.Position = UDim2.new(0.5, -210, 0.5, -250)
 Main.BackgroundColor3 = COLOR_BG
 Main.BorderSizePixel = 0
 Main.Active = true
@@ -256,18 +256,23 @@ local function createToggleButton(text, order)
     return frame, function() return state end
 end
 
--- Botões
+-- =========================
+-- BOTÕES
+-- =========================
 local btnCaixa                     = createActionButton("📦  Pega Caixa/Drop", 1)
-local btnScanDrops                 = createActionButton("🔍  Escanear Drops no Mapa", 2)
-local toggleNoclipFrame, getNoclip = createToggleButton("🚶  Noclip", 3)
-local toggleFlyFrame,    getFly    = createToggleButton("🕊️  Fly", 4)
+local btnSoltaCaixa                = createActionButton("🔓  Solta Caixas", 2)
+local btnScanDrops                 = createActionButton("🔍  Escanear Drops no Mapa", 3)
+local toggleNoclipFrame, getNoclip = createToggleButton("🚶  Noclip", 4)
+local toggleFlyFrame,    getFly    = createToggleButton("🕊️  Fly", 5)
 
--- Slider
+-- =========================
+-- SLIDER DE VELOCIDADE
+-- =========================
 local SliderFrame = Instance.new("Frame")
 SliderFrame.Size = UDim2.new(1, 0, 0, 54)
 SliderFrame.BackgroundColor3 = COLOR_PANEL
 SliderFrame.BorderSizePixel = 0
-SliderFrame.LayoutOrder = 5
+SliderFrame.LayoutOrder = 6
 SliderFrame.Parent = Content
 corner(SliderFrame, 8)
 stroke(SliderFrame, COLOR_RED_DARK, 1, 0.5)
@@ -347,7 +352,9 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Waypoints
+-- =========================
+-- WAYPOINTS
+-- =========================
 local wpLabel = Instance.new("TextLabel")
 wpLabel.Size = UDim2.new(1, 0, 0, 20)
 wpLabel.BackgroundTransparency = 1
@@ -356,7 +363,7 @@ wpLabel.TextColor3 = COLOR_RED_GLOW
 wpLabel.Font = Enum.Font.GothamBold
 wpLabel.TextSize = 13
 wpLabel.TextXAlignment = Enum.TextXAlignment.Left
-wpLabel.LayoutOrder = 6
+wpLabel.LayoutOrder = 7
 wpLabel.Parent = Content
 
 local WpScroll = Instance.new("ScrollingFrame")
@@ -367,7 +374,7 @@ WpScroll.ScrollBarThickness = 4
 WpScroll.ScrollBarImageColor3 = COLOR_RED
 WpScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 WpScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-WpScroll.LayoutOrder = 7
+WpScroll.LayoutOrder = 8
 WpScroll.Parent = Content
 corner(WpScroll, 8)
 stroke(WpScroll, COLOR_RED_DARK, 1, 0.5)
@@ -393,7 +400,7 @@ noWpMsg.Font = Enum.Font.Gotham
 noWpMsg.TextSize = 12
 noWpMsg.Parent = WpScroll
 
-local btnScan = createActionButton("🔍  Escanear Waypoints do Mapa", 8)
+local btnScan = createActionButton("🔍  Escanear Waypoints do Mapa", 9)
 
 local function teleportTo(position)
     local char = LocalPlayer.Character
@@ -506,6 +513,9 @@ btnScan.MouseButton1Click:Connect(function()
 end)
 scanWaypoints()
 
+-- =========================
+-- RODAPÉ
+-- =========================
 local Footer = Instance.new("TextLabel")
 Footer.Size = UDim2.new(1, 0, 0, 16)
 Footer.BackgroundTransparency = 1
@@ -513,9 +523,12 @@ Footer.Text = "RENAN FRX • v1.0"
 Footer.TextColor3 = COLOR_MUTED
 Footer.Font = Enum.Font.Gotham
 Footer.TextSize = 11
-Footer.LayoutOrder = 9
+Footer.LayoutOrder = 10
 Footer.Parent = Content
 
+-- =========================
+-- ÍCONE FLUTUANTE
+-- =========================
 local FloatBtn = Instance.new("TextButton")
 FloatBtn.Size = UDim2.new(0, 48, 0, 48)
 FloatBtn.Position = UDim2.new(0, 20, 0.5, -24)
@@ -532,6 +545,9 @@ FloatBtn.Parent = ScreenGui
 corner(FloatBtn, 24)
 stroke(FloatBtn, COLOR_RED, 1.5, 0.1)
 
+-- =========================
+-- MINIMIZAR / FECHAR
+-- =========================
 MinBtn.MouseButton1Click:Connect(function()
     Main.Visible = false
     FloatBtn.Visible = true
@@ -544,6 +560,9 @@ CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
+-- =========================
+-- ARRASTAR JANELA
+-- =========================
 do
     local dragInput, dragStart, startPos, draggingWin
     TitleBar.InputBegan:Connect(function(input)
@@ -578,30 +597,25 @@ end
 
 -- =========================
 -- LÓGICA: PEGA CAIXA/DROP
--- Keywords específicas do New Car Physics Mecânica Brasileira
 -- =========================
 local dropKeywords = {
-    -- Genéricos de drop
     "caixa", "box", "drop", "item", "loot", "bag",
     "chest", "reward", "premio", "present", "gift",
     "pack", "package", "supply", "pickup", "collect",
-    -- Peças de carro / mecânica
     "peca", "peça", "part", "engine", "motor",
     "roda", "wheel", "tire", "pneu", "freio", "brake",
     "suspensao", "suspension", "escapamento", "exhaust",
     "bateria", "battery", "radiador", "radiator",
     "cambio", "gearbox", "transmission", "diferencial",
-    -- Itens de jogo
     "dinheiro", "money", "cash", "grana", "ficha",
     "token", "coin", "moeda", "credito", "credit",
     "sucata", "scrap", "ferro", "metal", "material",
     "ferramenta", "tool", "chave", "wrench",
     "oleo", "oil", "fluido", "fluid", "combustivel", "fuel",
-    -- Drops de NPC
     "recompensa", "xp", "exp", "level", "bonus"
 }
 
-local function pegaCaixas()
+btnCaixa.MouseButton1Click:Connect(function()
     local char = LocalPlayer.Character
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart")
@@ -655,14 +669,48 @@ local function pegaCaixas()
     end
 
     print("[RENAN FRX] Itens coletados: " .. pegou)
-end
-
--- Botão Pega Caixa
-btnCaixa.MouseButton1Click:Connect(function()
-    pegaCaixas()
 end)
 
--- Botão Escanear Drops (mostra no output o que existe no mapa)
+-- =========================
+-- LÓGICA: SOLTA CAIXAS
+-- =========================
+btnSoltaCaixa.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    local soltou = 0
+
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            local part = obj:IsA("Model") and
+                (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")) or obj
+
+            if part then
+                for _, w in ipairs(part:GetChildren()) do
+                    if w:IsA("WeldConstraint") then
+                        if w.Part0 == root or w.Part1 == root then
+                            w:Destroy()
+                            soltou = soltou + 1
+                        end
+                    elseif w:IsA("Weld") then
+                        if w.Part0 == root or w.Part1 == root then
+                            w:Destroy()
+                            soltou = soltou + 1
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    print("[RENAN FRX] Itens soltos: " .. soltou)
+end)
+
+-- =========================
+-- LÓGICA: ESCANEAR DROPS
+-- =========================
 btnScanDrops.MouseButton1Click:Connect(function()
     local char = LocalPlayer.Character
     if not char then return end
@@ -678,13 +726,13 @@ btnScanDrops.MouseButton1Click:Connect(function()
             if part then
                 local dist = (part.Position - root.Position).Magnitude
                 if dist < 150 then
-                    print("  Nome: " .. obj.Name .. " | Distância: " .. math.floor(dist) .. " studs | Tipo: " .. obj.ClassName)
+                    print("  Nome: " .. obj.Name .. " | Dist: " .. math.floor(dist) .. " studs | Tipo: " .. obj.ClassName)
                     total = total + 1
                 end
             end
         end
     end
-    print("[RENAN FRX] Total próximo (150 studs): " .. total)
+    print("[RENAN FRX] Total próximo: " .. total)
     print("[RENAN FRX] ================================")
 end)
 
