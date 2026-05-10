@@ -1,7 +1,5 @@
 --[[
-    RENAN FRX | Script
-    Cores: Vermelho e Preto
-    Opções: Teleporta p/ Waypoint, Pega Caixa, Noclip, Fly
+    RENAN FRX | Script - New Car Physics Mecânica Brasileira
 ]]
 
 local Players = game:GetService("Players")
@@ -28,7 +26,6 @@ local function limpeza()
 end
 limpeza()
 
--- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RenanFrxScript"
 ScreenGui.ResetOnSpawn = false
@@ -41,9 +38,6 @@ if not ok then
     ScreenGui.Parent = LocalPlayer.PlayerGui
 end
 
--- =========================
--- PALETA DE CORES
--- =========================
 local COLOR_BG        = Color3.fromRGB(15, 15, 15)
 local COLOR_BG_DARK   = Color3.fromRGB(8, 8, 8)
 local COLOR_PANEL     = Color3.fromRGB(22, 22, 22)
@@ -53,9 +47,6 @@ local COLOR_RED_GLOW  = Color3.fromRGB(255, 40, 40)
 local COLOR_TEXT      = Color3.fromRGB(240, 240, 240)
 local COLOR_MUTED     = Color3.fromRGB(160, 160, 160)
 
--- =========================
--- HELPERS
--- =========================
 local function corner(parent, radius)
     local c = Instance.new("UICorner")
     c.CornerRadius = UDim.new(0, radius or 8)
@@ -73,9 +64,6 @@ local function stroke(parent, color, thickness, transparency)
     return s
 end
 
--- =========================
--- FRAME PRINCIPAL
--- =========================
 local Main = Instance.new("Frame")
 Main.Name = "Main"
 Main.Size = UDim2.new(0, 420, 0, 480)
@@ -96,9 +84,6 @@ Gradient.Color = ColorSequence.new{
 Gradient.Rotation = 90
 Gradient.Parent = Main
 
--- =========================
--- BARRA DE TÍTULO
--- =========================
 local TitleBar = Instance.new("Frame")
 TitleBar.Name = "TitleBar"
 TitleBar.Size = UDim2.new(1, 0, 0, 38)
@@ -159,9 +144,6 @@ CloseBtn.Parent = TitleBar
 corner(CloseBtn, 6)
 stroke(CloseBtn, COLOR_RED, 1, 0.2)
 
--- =========================
--- CONTAINER DO CONTEÚDO
--- =========================
 local Content = Instance.new("Frame")
 Content.Name = "Content"
 Content.Size = UDim2.new(1, -20, 1, -50)
@@ -174,9 +156,6 @@ Layout.Padding = UDim.new(0, 8)
 Layout.SortOrder = Enum.SortOrder.LayoutOrder
 Layout.Parent = Content
 
--- =========================
--- FUNÇÃO: BOTÃO DE AÇÃO
--- =========================
 local function createActionButton(text, order)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, 0, 0, 38)
@@ -209,9 +188,6 @@ local function createActionButton(text, order)
     return btn
 end
 
--- =========================
--- FUNÇÃO: TOGGLE (ON/OFF)
--- =========================
 local function createToggleButton(text, order)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, 0, 0, 38)
@@ -280,21 +256,18 @@ local function createToggleButton(text, order)
     return frame, function() return state end
 end
 
--- =========================
--- BOTÕES / OPÇÕES
--- =========================
-local btnCaixa                     = createActionButton("📦  Pega Caixa", 1)
-local toggleNoclipFrame, getNoclip = createToggleButton("🚶  Noclip", 2)
-local toggleFlyFrame,    getFly    = createToggleButton("🕊️  Fly", 3)
+-- Botões
+local btnCaixa                     = createActionButton("📦  Pega Caixa/Drop", 1)
+local btnScanDrops                 = createActionButton("🔍  Escanear Drops no Mapa", 2)
+local toggleNoclipFrame, getNoclip = createToggleButton("🚶  Noclip", 3)
+local toggleFlyFrame,    getFly    = createToggleButton("🕊️  Fly", 4)
 
--- =========================
--- SLIDER DE VELOCIDADE (FLY)
--- =========================
+-- Slider
 local SliderFrame = Instance.new("Frame")
 SliderFrame.Size = UDim2.new(1, 0, 0, 54)
 SliderFrame.BackgroundColor3 = COLOR_PANEL
 SliderFrame.BorderSizePixel = 0
-SliderFrame.LayoutOrder = 4
+SliderFrame.LayoutOrder = 5
 SliderFrame.Parent = Content
 corner(SliderFrame, 8)
 stroke(SliderFrame, COLOR_RED_DARK, 1, 0.5)
@@ -374,9 +347,7 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- =========================
--- SEÇÃO: TELEPORTE POR WAYPOINTS
--- =========================
+-- Waypoints
 local wpLabel = Instance.new("TextLabel")
 wpLabel.Size = UDim2.new(1, 0, 0, 20)
 wpLabel.BackgroundTransparency = 1
@@ -385,19 +356,18 @@ wpLabel.TextColor3 = COLOR_RED_GLOW
 wpLabel.Font = Enum.Font.GothamBold
 wpLabel.TextSize = 13
 wpLabel.TextXAlignment = Enum.TextXAlignment.Left
-wpLabel.LayoutOrder = 5
+wpLabel.LayoutOrder = 6
 wpLabel.Parent = Content
 
--- ScrollFrame para lista de waypoints
 local WpScroll = Instance.new("ScrollingFrame")
-WpScroll.Size = UDim2.new(1, 0, 0, 120)
+WpScroll.Size = UDim2.new(1, 0, 0, 100)
 WpScroll.BackgroundColor3 = COLOR_BG_DARK
 WpScroll.BorderSizePixel = 0
 WpScroll.ScrollBarThickness = 4
 WpScroll.ScrollBarImageColor3 = COLOR_RED
 WpScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 WpScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-WpScroll.LayoutOrder = 6
+WpScroll.LayoutOrder = 7
 WpScroll.Parent = Content
 corner(WpScroll, 8)
 stroke(WpScroll, COLOR_RED_DARK, 1, 0.5)
@@ -414,7 +384,6 @@ WpPadding.PaddingLeft = UDim.new(0, 6)
 WpPadding.PaddingRight = UDim.new(0, 6)
 WpPadding.Parent = WpScroll
 
--- Mensagem padrão quando não há waypoints
 local noWpMsg = Instance.new("TextLabel")
 noWpMsg.Size = UDim2.new(1, -12, 0, 30)
 noWpMsg.BackgroundTransparency = 1
@@ -424,12 +393,8 @@ noWpMsg.Font = Enum.Font.Gotham
 noWpMsg.TextSize = 12
 noWpMsg.Parent = WpScroll
 
--- Botão para escanear waypoints do mapa
-local btnScan = createActionButton("🔍  Escanear Waypoints do Mapa", 7)
+local btnScan = createActionButton("🔍  Escanear Waypoints do Mapa", 8)
 
--- =========================
--- FUNÇÃO: TELEPORTE
--- =========================
 local function teleportTo(position)
     local char = LocalPlayer.Character
     if not char then return end
@@ -442,17 +407,12 @@ local function teleportTo(position)
     end
 end
 
--- =========================
--- FUNÇÃO: CRIAR BOTÃO DE WAYPOINT
--- =========================
 local wpCount = 0
 local function addWaypointButton(name, position)
-    -- Remove mensagem de "nenhum waypoint" se existir
     if noWpMsg and noWpMsg.Parent then
         noWpMsg:Destroy()
         noWpMsg = nil
     end
-
     wpCount = wpCount + 1
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(1, -8, 0, 30)
@@ -478,39 +438,30 @@ local function addWaypointButton(name, position)
     btn.MouseLeave:Connect(function()
         TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = COLOR_PANEL}):Play()
     end)
-
     btn.MouseButton1Click:Connect(function()
         teleportTo(position)
     end)
-
     return btn
 end
 
--- =========================
--- FUNÇÃO: ESCANEAR WAYPOINTS
--- Procura objetos comuns usados como waypoints/checkpoints em jogos Roblox
--- =========================
 local function scanWaypoints()
-    -- Limpa lista anterior
     for _, child in ipairs(WpScroll:GetChildren()) do
-        if child:IsA("TextButton") then
-            child:Destroy()
-        end
+        if child:IsA("TextButton") then child:Destroy() end
     end
     wpCount = 0
 
-    -- Palavras-chave que jogos costumam usar para waypoints/checkpoints
     local keywords = {
         "waypoint", "checkpoint", "spawn", "stage",
         "point", "flag", "marco", "posto", "fase",
         "portal", "gate", "hub", "lobby", "area",
-        "zone", "region", "island", "base"
+        "zone", "oficina", "garagem", "garage", "mecanica",
+        "loja", "shop", "missao", "mission", "cidade",
+        "city", "posto", "gas", "estrada", "road"
     }
 
     local found = {}
     local seen = {}
 
-    -- Busca em todo o workspace
     for _, obj in ipairs(workspace:GetDescendants()) do
         if obj:IsA("BasePart") or obj:IsA("Model") or obj:IsA("SpawnLocation") then
             local nameLower = string.lower(obj.Name)
@@ -534,7 +485,6 @@ local function scanWaypoints()
     end
 
     if #found == 0 then
-        -- Se não achou nada, mostra mensagem
         local msg = Instance.new("TextLabel")
         msg.Size = UDim2.new(1, -12, 0, 30)
         msg.BackgroundTransparency = 1
@@ -544,7 +494,6 @@ local function scanWaypoints()
         msg.TextSize = 12
         msg.Parent = WpScroll
     else
-        -- Ordena por nome
         table.sort(found, function(a, b) return a.name < b.name end)
         for _, wp in ipairs(found) do
             addWaypointButton(wp.name, wp.pos)
@@ -555,13 +504,8 @@ end
 btnScan.MouseButton1Click:Connect(function()
     scanWaypoints()
 end)
-
--- Escaneia automaticamente ao carregar
 scanWaypoints()
 
--- =========================
--- RODAPÉ
--- =========================
 local Footer = Instance.new("TextLabel")
 Footer.Size = UDim2.new(1, 0, 0, 16)
 Footer.BackgroundTransparency = 1
@@ -569,12 +513,9 @@ Footer.Text = "RENAN FRX • v1.0"
 Footer.TextColor3 = COLOR_MUTED
 Footer.Font = Enum.Font.Gotham
 Footer.TextSize = 11
-Footer.LayoutOrder = 8
+Footer.LayoutOrder = 9
 Footer.Parent = Content
 
--- =========================
--- ÍCONE FLUTUANTE
--- =========================
 local FloatBtn = Instance.new("TextButton")
 FloatBtn.Size = UDim2.new(0, 48, 0, 48)
 FloatBtn.Position = UDim2.new(0, 20, 0.5, -24)
@@ -591,26 +532,18 @@ FloatBtn.Parent = ScreenGui
 corner(FloatBtn, 24)
 stroke(FloatBtn, COLOR_RED, 1.5, 0.1)
 
--- =========================
--- MINIMIZAR / FECHAR
--- =========================
 MinBtn.MouseButton1Click:Connect(function()
     Main.Visible = false
     FloatBtn.Visible = true
 end)
-
 FloatBtn.MouseButton1Click:Connect(function()
     Main.Visible = true
     FloatBtn.Visible = false
 end)
-
 CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- =========================
--- ARRASTAR JANELA
--- =========================
 do
     local dragInput, dragStart, startPos, draggingWin
     TitleBar.InputBegan:Connect(function(input)
@@ -644,30 +577,115 @@ do
 end
 
 -- =========================
--- LÓGICA: PEGA CAIXA
+-- LÓGICA: PEGA CAIXA/DROP
+-- Keywords específicas do New Car Physics Mecânica Brasileira
 -- =========================
-btnCaixa.MouseButton1Click:Connect(function()
+local dropKeywords = {
+    -- Genéricos de drop
+    "caixa", "box", "drop", "item", "loot", "bag",
+    "chest", "reward", "premio", "present", "gift",
+    "pack", "package", "supply", "pickup", "collect",
+    -- Peças de carro / mecânica
+    "peca", "peça", "part", "engine", "motor",
+    "roda", "wheel", "tire", "pneu", "freio", "brake",
+    "suspensao", "suspension", "escapamento", "exhaust",
+    "bateria", "battery", "radiador", "radiator",
+    "cambio", "gearbox", "transmission", "diferencial",
+    -- Itens de jogo
+    "dinheiro", "money", "cash", "grana", "ficha",
+    "token", "coin", "moeda", "credito", "credit",
+    "sucata", "scrap", "ferro", "metal", "material",
+    "ferramenta", "tool", "chave", "wrench",
+    "oleo", "oil", "fluido", "fluid", "combustivel", "fuel",
+    -- Drops de NPC
+    "recompensa", "xp", "exp", "level", "bonus"
+}
+
+local function pegaCaixas()
     local char = LocalPlayer.Character
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
+    local pegou = 0
+
     for _, obj in ipairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") and string.lower(obj.Name):find("caixa") then
-            local dist = (obj.Position - root.Position).Magnitude
-            if dist < 50 then
-                obj.Anchored = false
-                for _, w in ipairs(obj:GetChildren()) do
-                    if w:IsA("WeldConstraint") then w:Destroy() end
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            local nameLower = string.lower(obj.Name)
+            local matched = false
+
+            for _, kw in ipairs(dropKeywords) do
+                if nameLower:find(kw) then
+                    matched = true
+                    break
                 end
-                obj.CFrame = root.CFrame * CFrame.new(0, 2, -3)
-                local weld = Instance.new("WeldConstraint")
-                weld.Part0 = root
-                weld.Part1 = obj
-                weld.Parent = obj
+            end
+
+            if matched then
+                local part = obj:IsA("Model") and
+                    (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")) or obj
+
+                if part then
+                    local dist = (part.Position - root.Position).Magnitude
+                    if dist < 150 then
+                        pcall(function()
+                            if obj:IsA("Model") then
+                                obj:SetPrimaryPartCFrame(
+                                    root.CFrame * CFrame.new(0, 2, -3)
+                                )
+                            else
+                                obj.Anchored = false
+                                for _, w in ipairs(obj:GetChildren()) do
+                                    if w:IsA("WeldConstraint") or w:IsA("Weld") then
+                                        w:Destroy()
+                                    end
+                                end
+                                obj.CFrame = root.CFrame * CFrame.new(0, 2, -3)
+                                local weld = Instance.new("WeldConstraint")
+                                weld.Part0 = root
+                                weld.Part1 = obj
+                                weld.Parent = obj
+                            end
+                        end)
+                        pegou = pegou + 1
+                    end
+                end
             end
         end
     end
+
+    print("[RENAN FRX] Itens coletados: " .. pegou)
+end
+
+-- Botão Pega Caixa
+btnCaixa.MouseButton1Click:Connect(function()
+    pegaCaixas()
+end)
+
+-- Botão Escanear Drops (mostra no output o que existe no mapa)
+btnScanDrops.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    print("[RENAN FRX] === DROPS ENCONTRADOS NO MAPA ===")
+    local total = 0
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if (obj:IsA("BasePart") or obj:IsA("Model")) and not obj:IsDescendantOf(char) then
+            local part = obj:IsA("Model") and
+                (obj.PrimaryPart or obj:FindFirstChildOfClass("BasePart")) or obj
+            if part then
+                local dist = (part.Position - root.Position).Magnitude
+                if dist < 150 then
+                    print("  Nome: " .. obj.Name .. " | Distância: " .. math.floor(dist) .. " studs | Tipo: " .. obj.ClassName)
+                    total = total + 1
+                end
+            end
+        end
+    end
+    print("[RENAN FRX] Total próximo (150 studs): " .. total)
+    print("[RENAN FRX] ================================")
 end)
 
 -- =========================
